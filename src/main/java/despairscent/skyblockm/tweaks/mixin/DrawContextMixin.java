@@ -156,7 +156,7 @@ public class DrawContextMixin {
         return itemSetup.enabled && (itemSetup.renderAlways ||
                 (CLIENT.currentScreen != null && Screen.hasShiftDown()) ||
                 (itemSetup instanceof Config.RenderItemInsideItemSetupEsPattern itemSetupEsPattern &&
-                        itemSetupEsPattern.forceRenderInsideInterface && ModUtils.testCustomScreen(CLIENT.currentScreen, "electric_storage:interfaces", "\u0003")));
+                        itemSetupEsPattern.forceRenderInsideInterface && ModUtils.testCustomScreen(true, CLIENT.currentScreen, "electric_storage:interfaces", "\u0003")));
     }
 
     @Unique

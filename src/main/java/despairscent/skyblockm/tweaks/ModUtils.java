@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+
 public class ModUtils {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("skyblockm-tweaks");
@@ -30,24 +31,29 @@ public class ModUtils {
         return Text.translatable("skyblockm-tweaks." + key, args);
     }
 
-    public static boolean testCustomScreen(Screen screen, String namespace, String... codes) {
+    public static boolean testCustomScreen(boolean customFont, Screen screen, String namespace, String... codes) {
         if (screen == null) {
             return false;
         }
+
         List<Text> siblings = screen.getTitle().getSiblings();
         if (siblings.isEmpty()) {
             return false;
         }
+
         // "recipeviewer:interfaces" отклоняется от нормы
         for (int i = 0; i < siblings.size() && i < 2; i++) {
             Text child = siblings.get(i);
-            if (child.getContent() instanceof PlainTextContent plainText && child.getStyle().getFont().toString().equals(namespace)) {
+            String codeScreen = child.getString();
+            boolean fontMatches = !customFont || child.getStyle().getFont().toString().equals(namespace);
+
+            if (fontMatches) {
                 if (codes.length == 0) {
                     return true;
                 }
-                String codeScreen = plainText.string();
+
                 for (String code : codes) {
-                    if (codeScreen.equals(code)) {
+                    if (codeScreen.contains(code)) {
                         return true;
                     }
                 }

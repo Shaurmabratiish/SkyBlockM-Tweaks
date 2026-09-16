@@ -1,4 +1,4 @@
-package despairscent.skyblockm.tweaks.modules.esterminalscroll;
+package despairscent.skyblockm.tweaks.modules.scrolling;
 
 import despairscent.skyblockm.tweaks.ModUtils;
 import despairscent.skyblockm.tweaks.config.Config;
@@ -43,16 +43,16 @@ public class EsTerminalScrollModule {
         }
 
         int slot;
-        if (ModUtils.testCustomScreen(screen, "electric_storage:interfaces", "\u1000", "\u1020", "\u1021", "\u1030", "\u2000", "\u2001")) {
+        if (ModUtils.testCustomScreen(false, screen, "electric_storage:interfaces", "\u2001")) {
             slot = up ? 8 : 35;
-        } else if (ModUtils.testCustomScreen(screen, "electric_storage:interfaces", "\u1002", "\u1004", "\u1006")) {
-            slot = up ? 8 : 17;
-        } else if (ModUtils.testCustomScreen(screen, "electric_storage:interfaces", "\u1010")) {
+        }
+        else if (ModUtils.testCustomScreen(true, screen, "electric_storage:interfaces", "\u1000", "\u1020", "\u1021", "\u1030", "\u2000")) {
+            slot = up ? 8 : 35;
+        }  else if (ModUtils.testCustomScreen(true, screen, "electric_storage:interfaces", "\u1010")) {
             slot = up ? 11 : 38;
         } else {
             return false;
         }
-
         if (lastClickAt != tick) {
             clickedPerTick = 0;
         }

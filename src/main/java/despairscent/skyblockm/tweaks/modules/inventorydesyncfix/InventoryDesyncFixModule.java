@@ -58,7 +58,7 @@ public class InventoryDesyncFixModule {
     }
 
     private static boolean isRecipeViewer(Screen screen) {
-        return testCustomScreen(screen, "recipeviewer:interfaces") || testCustomScreen(screen, "recipeviewer:interfaces_generated");
+        return testCustomScreen(true, screen, "recipeviewer:interfaces") || testCustomScreen(true, screen, "recipeviewer:interfaces_generated");
     }
 
     public static void handleSelectedSlotUpdate() {
