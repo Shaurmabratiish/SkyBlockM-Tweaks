@@ -1,6 +1,9 @@
 package despairscent.skyblockm.tweaks;
 
 import despairscent.skyblockm.tweaks.config.Config;
+import despairscent.skyblockm.tweaks.keybinds.ConfigKeybind;
+import despairscent.skyblockm.tweaks.keybinds.Keybind;
+import despairscent.skyblockm.tweaks.keybinds.KeybindHandler;
 import despairscent.skyblockm.tweaks.modules.compactgenome.CompactGenomeModule;
 import despairscent.skyblockm.tweaks.modules.scrolling.EsTerminalScrollModule;
 import despairscent.skyblockm.tweaks.modules.inventorydesyncfix.InventoryDesyncFixModule;
@@ -20,6 +23,12 @@ public class ModLoader implements ClientModInitializer {
         HelpMenuScroll.init();
         EsTerminalScrollModule.init();
         InventoryDesyncFixModule.init();
+
+
+        /// кейбинды
+        KeybindHandler.init();
+        new ConfigKeybind().register();
+
     }
 
 }

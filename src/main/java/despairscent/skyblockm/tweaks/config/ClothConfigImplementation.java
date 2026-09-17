@@ -17,7 +17,7 @@ import static despairscent.skyblockm.tweaks.ModUtils.i18n;
 
 public class ClothConfigImplementation {
 
-    static Screen generate(Screen parent) {
+    public static Screen generate(Screen parent) {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
                 .setTitle(i18n("config.base.title"));

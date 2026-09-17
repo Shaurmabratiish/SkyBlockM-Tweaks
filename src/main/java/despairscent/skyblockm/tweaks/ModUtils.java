@@ -101,4 +101,8 @@ public class ModUtils {
         return builder.build();
     }
 
+    public static void executeFromMain(Runnable runnable) {
+        MinecraftClient.getInstance().execute(runnable);
+    }
+
 }
