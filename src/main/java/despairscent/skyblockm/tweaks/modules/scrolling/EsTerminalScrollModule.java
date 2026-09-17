@@ -3,6 +3,7 @@ package despairscent.skyblockm.tweaks.modules.scrolling;
 import despairscent.skyblockm.tweaks.ModUtils;
 import despairscent.skyblockm.tweaks.config.Config;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.SlotActionType;
 
@@ -38,6 +39,10 @@ public class EsTerminalScrollModule {
     }
 
     private static boolean sendClick(boolean up, boolean wheel) {
+
+        if (MinecraftClient.getInstance().player == null) return false;
+
+
         if (!(CLIENT.currentScreen instanceof HandledScreen<?> screen)) {
             return false;
         }

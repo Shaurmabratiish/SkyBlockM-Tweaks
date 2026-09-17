@@ -2,7 +2,7 @@ package despairscent.skyblockm.tweaks.mixin;
 
 import despairscent.skyblockm.tweaks.ModUtils;
 import despairscent.skyblockm.tweaks.modules.scrolling.EsTerminalScrollModule;
-import despairscent.skyblockm.tweaks.modules.scrolling.ScrollModule;
+import despairscent.skyblockm.tweaks.modules.scrolling.HelpMenuScroll;
 import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,13 +20,16 @@ public class MouseMixin {
             order = 999, // Для выполнения перед IPN
             cancellable = true)
     private void onMouseScrollInject(long window, double horizontal, double vertical, CallbackInfo ci) {
-        if (!CONFIG.esTerminalScroll.enabled || !CONFIG.esTerminalScroll.wheel) {
+        if ((!CONFIG.esTerminalScroll.enabled || !CONFIG.esTerminalScroll.wheel) && (!CONFIG.helpMenuScrollConfig.enabled || !CONFIG.helpMenuScrollConfig.wheel)) {
             return;
         }
+
+
+
         if (window != CLIENT.getWindow().getHandle() || !CLIENT.isOnThread()) {
             return;
         }
-        if (!ModUtils.isKeyPressedOrUndefined(CONFIG.esTerminalScroll.wheelModifier)) {
+        if (!ModUtils.isKeyPressedOrUndefined(CONFIG.esTerminalScroll.wheelModifier) && !ModUtils.isKeyPressedOrUndefined(CONFIG.helpMenuScrollConfig.wheelModifier)) {
             return;
         }
 
@@ -34,13 +37,23 @@ public class MouseMixin {
                 CLIENT.options.getMouseWheelSensitivity().getValue();
 
         if (vertical >= 1) {
-            if (ScrollModule.doScrollUp(true)) {
+            if (EsTerminalScrollModule.doScrollUp(true)) {
                 ci.cancel();
             }
+
+            if (HelpMenuScroll.doScrollUp(true)) {
+                ci.cancel();
+            }
+
         } else if (vertical <= -1) {
-            if (ScrollModule.doScrollDown(true)) {
+            if (HelpMenuScroll.doScrollDown(true)) {
                 ci.cancel();
             }
+
+            if (EsTerminalScrollModule.doScrollDown(true)) {
+                ci.cancel();
+            }
+
         }
     }
 

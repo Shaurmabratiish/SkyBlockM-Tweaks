@@ -36,6 +36,8 @@ public class ModUtils {
             return false;
         }
 
+        if (MinecraftClient.getInstance().player == null) return false;
+
         List<Text> siblings = screen.getTitle().getSiblings();
         if (siblings.isEmpty()) {
             return false;

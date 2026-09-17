@@ -21,8 +21,8 @@ public class ClothConfigImplementation {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
                 .setTitle(i18n("config.base.title"));
-        ConfigCategory base = builder.getOrCreateCategory(Text.empty());
-        
+        ConfigCategory base = builder.getOrCreateCategory(i18n("config.general.title"));
+        ConfigCategory wheel = builder.getOrCreateCategory(i18n("config.scrolling.title"));
         Text moduleSetupText = i18n("config.base.moduleSetup");
 
         base.addEntry(builder.entryBuilder().startBooleanToggle(i18n("config.storageTargetingFix"), CONFIG.storageTargetingFix.enabled)
@@ -104,11 +104,11 @@ public class ClothConfigImplementation {
                         .build()
         )).build());
 
-        base.addEntry(builder.entryBuilder().startBooleanToggle(i18n("config.esTerminalScroll"), CONFIG.esTerminalScroll.enabled)
+        wheel.addEntry(builder.entryBuilder().startBooleanToggle(i18n("config.esTerminalScroll"), CONFIG.esTerminalScroll.enabled)
                 .setDefaultValue(Config.DEFAULT.esTerminalScroll.enabled)
                 .setSaveConsumer(value -> CONFIG.esTerminalScroll.enabled = value)
                 .build());
-        base.addEntry(builder.entryBuilder().startSubCategory(moduleSetupText, Arrays.asList(
+        wheel.addEntry(builder.entryBuilder().startSubCategory(moduleSetupText, Arrays.asList(
                 builder.entryBuilder().startBooleanToggle(i18n("config.esTerminalScroll.wheel"), CONFIG.esTerminalScroll.wheel)
                         .setDefaultValue(Config.DEFAULT.esTerminalScroll.wheel)
                         .setSaveConsumer(value -> CONFIG.esTerminalScroll.wheel = value)
@@ -152,17 +152,72 @@ public class ClothConfigImplementation {
                         .build()
         )).build());
 
+        wheel.addEntry(builder.entryBuilder().startBooleanToggle(i18n("config.helpMenuScroll"), CONFIG.helpMenuScrollConfig.enabled)
+                .setDefaultValue(Config.DEFAULT.helpMenuScrollConfig.enabled)
+                .setSaveConsumer(value -> CONFIG.helpMenuScrollConfig.enabled = value)
+                .build());
+        wheel.addEntry(builder.entryBuilder().startSubCategory(moduleSetupText, Arrays.asList(
+                builder.entryBuilder().startBooleanToggle(i18n("config.helpMenuScroll.wheel"), CONFIG.helpMenuScrollConfig.wheel)
+                        .setDefaultValue(Config.DEFAULT.helpMenuScrollConfig.wheel)
+                        .setSaveConsumer(value -> CONFIG.helpMenuScrollConfig.wheel = value)
+                        .build(),
+                builder.entryBuilder().startKeyCodeField(i18n("config.helpMenuScroll.wheelModifier"), InputUtil.Type.KEYSYM.createFromCode(CONFIG.helpMenuScrollConfig.wheelModifier))
+                        .setAllowModifiers(false)
+                        .setDefaultValue(InputUtil.Type.KEYSYM.createFromCode(Config.DEFAULT.helpMenuScrollConfig.wheelModifier))
+                        .setKeySaveConsumer(value -> CONFIG.helpMenuScrollConfig.wheelModifier = value.getCode())
+                        .build(),
+                builder.entryBuilder().startKeyCodeField(i18n("config.helpMenuScroll.keyUp"), InputUtil.Type.KEYSYM.createFromCode(CONFIG.helpMenuScrollConfig.keyUp))
+                        .setAllowModifiers(false)
+                        .setDefaultValue(InputUtil.Type.KEYSYM.createFromCode(Config.DEFAULT.helpMenuScrollConfig.keyUp))
+                        .setKeySaveConsumer(value -> CONFIG.helpMenuScrollConfig.keyUp = value.getCode())
+                        .build(),
+                builder.entryBuilder().startKeyCodeField(i18n("config.helpMenuScroll.keyDown"), InputUtil.Type.KEYSYM.createFromCode(CONFIG.helpMenuScrollConfig.keyDown))
+                        .setAllowModifiers(false)
+                        .setDefaultValue(InputUtil.Type.KEYSYM.createFromCode(Config.DEFAULT.helpMenuScrollConfig.keyDown))
+                        .setKeySaveConsumer(value -> CONFIG.helpMenuScrollConfig.keyDown = value.getCode())
+                        .build(),
+                builder.entryBuilder().startIntField(i18n("config.helpMenuScroll.actionLimitWheel"), CONFIG.helpMenuScrollConfig.actionLimitWheel)
+                        .setTooltip(i18n("config.helpMenuScroll.actionLimitWheel.tooltip"))
+                        .setDefaultValue(Config.DEFAULT.helpMenuScrollConfig.actionLimitWheel)
+                        .setSaveConsumer(value -> CONFIG.helpMenuScrollConfig.actionLimitWheel = value)
+                        .build(),
+                builder.entryBuilder().startIntField(i18n("config.helpMenuScroll.actionLimitKey"), CONFIG.helpMenuScrollConfig.actionLimitKey)
+                        .setTooltip(i18n("config.helpMenuScroll.actionLimitKey.tooltip"))
+                        .setDefaultValue(Config.DEFAULT.helpMenuScrollConfig.actionLimitKey)
+                        .setSaveConsumer(value -> CONFIG.helpMenuScrollConfig.actionLimitKey = value)
+                        .build(),
+                builder.entryBuilder().startKeyCodeField(i18n("config.helpMenuScroll.boostKey"), InputUtil.Type.KEYSYM.createFromCode(CONFIG.helpMenuScrollConfig.boostKey))
+                        .setTooltip(i18n("config.helpMenuScroll.boostKey.tooltip"))
+                        .setAllowModifiers(false)
+                        .setDefaultValue(InputUtil.Type.KEYSYM.createFromCode(Config.DEFAULT.helpMenuScrollConfig.boostKey))
+                        .setKeySaveConsumer(value -> CONFIG.helpMenuScrollConfig.boostKey = value.getCode())
+                        .build(),
+                builder.entryBuilder().startEnumSelector(i18n("config.helpMenuScroll.boostKeyType"), Config.HelpMenuScrollBoostKeyType.class, CONFIG.helpMenuScrollConfig.boostKeyType)
+                        .setTooltip(i18n("config.helpMenuScroll.boostKeyType.tooltip"))
+                        .setEnumNameProvider(v -> ((Config.HelpMenuScrollBoostKeyType) v).optionName)
+                        .setDefaultValue(Config.DEFAULT.helpMenuScrollConfig.boostKeyType)
+                        .setSaveConsumer(value -> CONFIG.helpMenuScrollConfig.boostKeyType = value)
+                        .build()
+        )).build());
+
         base.addEntry(builder.entryBuilder().startBooleanToggle(i18n("config.compactGenome"), CONFIG.compactGenome.enabled)
                 .setTooltip(i18n("config.compactGenome.tooltip"))
                 .setDefaultValue(Config.DEFAULT.compactGenome.enabled)
                 .setSaveConsumer(value -> CONFIG.compactGenome.enabled = value)
                 .build());
 
-        base.addEntry(builder.entryBuilder().startBooleanToggle(i18n("config.hideHiddenArmorStands"), CONFIG.hideHiddenArmorStands.enabled)
-                .setTooltip(i18n("config.hideHiddenArmorStands.tooltip"))
-                .setDefaultValue(Config.DEFAULT.hideHiddenArmorStands.enabled)
-                .setSaveConsumer(value -> CONFIG.hideHiddenArmorStands.enabled = value)
+        base.addEntry(builder.entryBuilder().startBooleanToggle(i18n("config.cullingEntities"), CONFIG.cullingEntities.enabled)
+                .setDefaultValue(Config.DEFAULT.cullingEntities.enabled)
+                .setSaveConsumer(value -> CONFIG.cullingEntities.enabled = value)
                 .build());
+
+        base.addEntry(builder.entryBuilder().startSubCategory(moduleSetupText, Arrays.asList(
+                builder.entryBuilder().startIntSlider(i18n("config.cullingEntities.distance"), CONFIG.cullingEntities.distance, 4, 64)
+                        .setTooltip(i18n("config.cullingEntities.distance.tooltip"))
+                        .setDefaultValue(Config.DEFAULT.cullingEntities.distance)
+                        .setSaveConsumer(value -> CONFIG.cullingEntities.distance = value)
+                        .build()
+        )).build());
 
         builder.setSavingRunnable(() -> CONFIG.save());
 

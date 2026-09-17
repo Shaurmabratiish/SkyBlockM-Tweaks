@@ -3,13 +3,15 @@ package despairscent.skyblockm.tweaks.modules.scrolling;
 import despairscent.skyblockm.tweaks.ModUtils;
 import despairscent.skyblockm.tweaks.config.Config;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.Text;
 
 import static despairscent.skyblockm.tweaks.ModUtils.CLIENT;
 import static despairscent.skyblockm.tweaks.ModUtils.CONFIG;
 
-public class ScrollModule {
+public class HelpMenuScroll {
 
     private static int tick;
     private static int lastClickAt;
@@ -17,10 +19,10 @@ public class ScrollModule {
 
     public static void init() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (CONFIG.esTerminalScroll.enabled) {
-                if (ModUtils.isKeyPressed(CONFIG.esTerminalScroll.keyUp)) {
+            if (CONFIG.helpMenuScrollConfig.enabled) {
+                if (ModUtils.isKeyPressed(CONFIG.helpMenuScrollConfig.keyUp)) {
                     doScrollUp(false);
-                } else if (ModUtils.isKeyPressed(CONFIG.esTerminalScroll.keyDown)) {
+                } else if (ModUtils.isKeyPressed(CONFIG.helpMenuScrollConfig.keyDown)) {
                     doScrollDown(false);
                 }
             }
@@ -38,18 +40,15 @@ public class ScrollModule {
     }
 
     private static boolean sendClick(boolean up, boolean wheel) {
+
+        if (MinecraftClient.getInstance().player == null) return false;
+
+
         if (!(CLIENT.currentScreen instanceof HandledScreen<?> screen)) {
             return false;
         }
-
         int slot;
-        if (ModUtils.testCustomScreen(false, screen, "electric_storage:interfaces", "\u2001")) {
-            slot = up ? 8 : 35;
-        } else if (ModUtils.testCustomScreen(true, screen, "electric_storage:interfaces", "\u1000", "\u1020", "\u1021", "\u1030", "\u2000")) {
-            slot = up ? 8 : 35;
-        } else if (ModUtils.testCustomScreen(true, screen, "electric_storage:interfaces", "\u1010")) {
-            slot = up ? 11 : 38;
-        } else if (ModUtils.testCustomScreen(true, screen, "guide:interfaces", "\u1000")) {
+        if (ModUtils.testCustomScreen(true, screen, "guide:interfaces", "\u1000")) {
             slot = up ? 54 : 62;
         } else {
             return false;
@@ -57,17 +56,16 @@ public class ScrollModule {
         if (lastClickAt != tick) {
             clickedPerTick = 0;
         }
-        int limit = wheel ? CONFIG.esTerminalScroll.actionLimitWheel : CONFIG.esTerminalScroll.actionLimitKey;
+        int limit = wheel ? CONFIG.helpMenuScrollConfig.actionLimitWheel : CONFIG.helpMenuScrollConfig.actionLimitKey;
         if (limit > 0 ?
                 tick - lastClickAt > limit :
                 clickedPerTick < Math.max(1, -limit)) {
-            boolean boost = ModUtils.isKeyPressed(CONFIG.esTerminalScroll.boostKey) ^ (CONFIG.esTerminalScroll.boostKeyType == Config.EsTerminalScrollBoostKeyType.DEACTIVATE);
+            boolean boost = ModUtils.isKeyPressed(CONFIG.helpMenuScrollConfig.boostKey) ^ (CONFIG.helpMenuScrollConfig.boostKeyType == Config.HelpMenuScrollBoostKeyType.DEACTIVATE);
             CLIENT.interactionManager.clickSlot(screen.getScreenHandler().syncId, slot, 0, boost ? SlotActionType.QUICK_MOVE : SlotActionType.PICKUP, CLIENT.player);
             lastClickAt = tick;
             ++clickedPerTick;
-
         }
+
         return true;
     }
-
 }

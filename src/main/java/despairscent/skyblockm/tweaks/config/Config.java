@@ -45,6 +45,8 @@ public class Config {
 
     public MoreTooltipInfoConfig moreTooltipInfo = new MoreTooltipInfoConfig();
 
+    public CullingEntities cullingEntities = new CullingEntities();
+
     public RenderItemInsideConfig renderItemInside = new RenderItemInsideConfig();
 
     @SerializedName(value = "textInputLagFix", alternate = {"inputLagFix"})
@@ -53,6 +55,8 @@ public class Config {
     public InventoryDesyncFix inventoryDesyncFix = new InventoryDesyncFix();
 
     public EsTerminalScrollConfig esTerminalScroll = new EsTerminalScrollConfig();
+
+    public HelpMenuScrollConfig helpMenuScrollConfig = new HelpMenuScrollConfig();
 
     public CompactGenomeConfig compactGenome = new CompactGenomeConfig();
 
@@ -65,7 +69,9 @@ public class Config {
         public boolean moreTooltipInfo = true;
         public boolean renderItemInside = true;
         public boolean inputLagFix = true;
+        public boolean cullingEntities = false;
         public boolean esTerminalScroll = true;
+        public boolean helpMenuScrollConfig = true;
         public boolean compactGenome = false;
         public boolean hideHiddenArmorStands = false;
     }
@@ -83,6 +89,11 @@ public class Config {
 
     public static class StorageTargetingFixConfig {
         public boolean enabled = true;
+    }
+
+    public static class CullingEntities{
+        public boolean enabled = false;
+        public int distance = 24;
     }
 
     public static class MoreTooltipInfoConfig {
@@ -150,6 +161,33 @@ public class Config {
         public EsTerminalScrollBoostKeyType boostKeyType = EsTerminalScrollBoostKeyType.ACTIVATE;
     }
 
+    public static class HelpMenuScrollConfig {
+        public boolean enabled = true;
+
+        public boolean wheel = true;
+        public int wheelModifier = KEY_UNDEFINED;
+        public int keyDown = KEY_UNDEFINED;
+        // public short keyDownModifiers = MODIFIER_UNDEFINED;
+        public int keyUp = KEY_UNDEFINED;
+        // public short keyUpModifiers = MODIFIER_UNDEFINED;
+        public int actionLimitWheel = 0;
+        public int actionLimitKey = 2;
+
+        public int boostKey = InputUtil.GLFW_KEY_LEFT_SHIFT;
+        public HelpMenuScrollBoostKeyType boostKeyType = HelpMenuScrollBoostKeyType.ACTIVATE;
+    }
+
+    public enum HelpMenuScrollBoostKeyType {
+        ACTIVATE(i18n("config.helpMenuScroll.boostKeyType.activate")),
+        DEACTIVATE(i18n("config.helpMenuScroll.boostKeyType.deactivate"));
+
+        public final Text optionName;
+
+        HelpMenuScrollBoostKeyType(Text optionName) {
+            this.optionName = optionName;
+        }
+    }
+
     public enum EsTerminalScrollBoostKeyType {
         ACTIVATE(i18n("config.esTerminalScroll.boostKeyType.activate")),
         DEACTIVATE(i18n("config.esTerminalScroll.boostKeyType.deactivate"));
@@ -179,7 +217,9 @@ public class Config {
                 config.moreTooltipInfo.enabled = config.modules.moreTooltipInfo;
                 config.renderItemInside.enabled = config.modules.renderItemInside;
                 config.textInputLagFix.enabled = config.modules.inputLagFix;
+                config.cullingEntities.enabled = config.modules.cullingEntities;
                 config.esTerminalScroll.enabled = config.modules.esTerminalScroll;
+                config.helpMenuScrollConfig.enabled = config.modules.helpMenuScrollConfig;
                 config.compactGenome.enabled = config.modules.compactGenome;
                 config.hideHiddenArmorStands.enabled = config.modules.hideHiddenArmorStands;
             }

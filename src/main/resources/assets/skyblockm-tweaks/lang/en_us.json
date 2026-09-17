@@ -5,7 +5,8 @@
 
   "skyblockm-tweaks.config.base.title": "SkyBlockM Tweaks",
   "skyblockm-tweaks.config.base.moduleSetup": "  [Расширенная настройка]",
-
+  "skyblockm-tweaks.config.general.title": "Главное",
+  "skyblockm-tweaks.config.scrolling.title": "Прокрут",
 
   "skyblockm-tweaks.config.storageTargetingFix": "Исправление наведения на хранилище",
   "skyblockm-tweaks.config.storageTargetingFix.tooltip": "В некоторых случаях, без исправления, клики не проходят (например с ключом в руке)",
@@ -67,11 +68,31 @@
   "skyblockm-tweaks.config.esTerminalScroll.boostKeyType.activate": "Активация",
   "skyblockm-tweaks.config.esTerminalScroll.boostKeyType.deactivate": "Отключение",
 
+  "skyblockm-tweaks.config.helpMenuScroll": "Прокрутка в Гайд-менюшке",
+
+  "skyblockm-tweaks.config.helpMenuScroll.wheel": "Прокрутка колесом мыши",
+  "skyblockm-tweaks.config.helpMenuScroll.wheelModifier": "Клавиша для удержания с колесом мыши",
+  "skyblockm-tweaks.config.helpMenuScroll.keyUp": "Клавиша прокрутки вверх",
+  "skyblockm-tweaks.config.helpMenuScroll.keyDown": "Клавиша прокрутки вниз",
+  "skyblockm-tweaks.config.helpMenuScroll.actionLimitWheel": "Лимит срабатывания прокрутки [Колесо мыши]",
+  "skyblockm-tweaks.config.helpMenuScroll.actionLimitWheel.tooltip": "Если больше 0: перерыв между действиями прокрутки в тиках, необходимо для предотвращения спама\nЕсли меньше 0: лимит на кол-во срабатываний за тик (0 действует как -1)",
+  "skyblockm-tweaks.config.helpMenuScroll.actionLimitKey": "Лимит срабатывания прокрутки [Клавиши]",
+  "skyblockm-tweaks.config.helpMenuScroll.actionLimitKey.tooltip": "Перерыв между действиями прокрутки в тиках, необходимо для предотвращения спама",
+  "skyblockm-tweaks.config.helpMenuScroll.boostKey": "Клавиша для удержания к двойной прокрутке",
+  "skyblockm-tweaks.config.helpMenuScroll.boostKey.tooltip": "Двойная прокрутка работает так, как если кликать в интерфейсе вручную с зажатым Shift",
+  "skyblockm-tweaks.config.helpMenuScroll.boostKeyType": "Режим работы клавиши двойной прокрутки",
+  "skyblockm-tweaks.config.helpMenuScroll.boostKeyType.tooltip": "Если выбрано \"Отключение\" - двойная прокрутка будет активна всегда, пока не нажата заданная клавиша",
+  "skyblockm-tweaks.config.helpMenuScroll.boostKeyType.activate": "Активация",
+  "skyblockm-tweaks.config.helpMenuScroll.boostKeyType.deactivate": "Отключение",
 
   "skyblockm-tweaks.config.compactGenome": "Компактный показ генов пчел",
   "skyblockm-tweaks.config.compactGenome.tooltip": "Только для опытных пчеловодов, большая часть подробностей будет скрыта",
 
 
   "skyblockm-tweaks.config.hideHiddenArmorStands": "Скрытие невидимых стоек для брони",
-  "skyblockm-tweaks.config.hideHiddenArmorStands.tooltip": "Скрывает видимые в режиме наблюдения невидимые стойки для брони\nТолько для модерации, которой нравится призраками наблюдать за предметами в трубах с максимальной дистанцией отображения в настройках"
+  "skyblockm-tweaks.config.hideHiddenArmorStands.tooltip": "Скрывает видимые в режиме наблюдения невидимые стойки для брони\nТолько для модерации, которой нравится призраками наблюдать за предметами в трубах с максимальной дистанцией отображения в настройках",
+
+  "skyblockm-tweaks.config.cullingEntities": "Оптимизация рендера сущностей",
+  "skyblockm-tweaks.config.cullingEntities.distance": "Дистанция",
+  "skyblockm-tweaks.config.cullingEntities.distance.tooltip": "Дистанция рендера сущностей"
 }
