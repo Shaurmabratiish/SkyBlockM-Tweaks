@@ -5,8 +5,6 @@ import despairscent.skyblockm.tweaks.config.Config;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.PlainTextContent;
@@ -65,9 +63,8 @@ public class ModUtils {
     }
 
     public static int getCustomModelId(ItemStack itemStack) {
-        CustomModelDataComponent valueHolder;
-        if ((valueHolder = itemStack.get(DataComponentTypes.CUSTOM_MODEL_DATA)) != null) {
-            return valueHolder.value();
+        if (itemStack.hasNbt() && itemStack.getNbt().contains("CustomModelData", 99)) {
+            return itemStack.getNbt().getInt("CustomModelData");
         }
         return -1;
     }

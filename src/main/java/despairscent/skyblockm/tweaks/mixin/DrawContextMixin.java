@@ -11,8 +11,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -43,30 +41,27 @@ public class DrawContextMixin {
     @Inject(method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V",
             at = @At("HEAD"))
     private void drawItemInjectHead(LivingEntity entity, World world, ItemStack itemStack, int x, int y, int seed, int z, CallbackInfo ci) {
-        if (!CONFIG.renderItemInside.enabled ||
-                !itemStack.contains(DataComponentTypes.CUSTOM_MODEL_DATA) ||
-                !itemStack.contains(DataComponentTypes.CUSTOM_DATA)) {
+        if (!CONFIG.renderItemInside.enabled || !itemStack.hasNbt()) {
             return;
         }
 
-        int modelId = itemStack.get(DataComponentTypes.CUSTOM_MODEL_DATA).value();
-        NbtCompound customData = itemStack.get(DataComponentTypes.CUSTOM_DATA).getNbt();
+        int modelId = ModUtils.getCustomModelId(itemStack);
 
         int bgColor;
         if (itemStack.getItem() == Items.PAPER && modelId == 7301) {
-            if (!customData.contains("ElectricStorage.RecipeResults") ||
+            if (!itemStack.getNbt().contains("ElectricStorage.RecipeResults") ||
                     !testRender(CONFIG.renderItemInside.esPattern)) {
                 return;
             }
             bgColor = CONFIG.renderItemInside.esPattern.bgColor;
         } else if (itemStack.getItem() == Items.BARRIER && modelId >= 1010 && modelId <= 1013) {
-            if (!customData.contains("ItemStack") ||
+            if (!itemStack.getNbt().contains("ItemStack") ||
                     !testRender(CONFIG.renderItemInside.storage)) {
                 return;
             }
             bgColor = CONFIG.renderItemInside.storage.bgColor;
         } else if (itemStack.getItem() == Items.IRON_HORSE_ARMOR && modelId == 2001) {
-            if (!customData.contains("StoredItem") ||
+            if (!itemStack.getNbt().contains("StoredItem") ||
                     !testRender(CONFIG.renderItemInside.crystalMemory)) {
                 return;
             }
@@ -86,39 +81,36 @@ public class DrawContextMixin {
     @Inject(method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformationMode;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V"))
     private void drawItemInject(LivingEntity entity, World world, ItemStack itemStack, int x, int y, int seed, int z, CallbackInfo ci) {
-        if (!CONFIG.renderItemInside.enabled ||
-                !itemStack.contains(DataComponentTypes.CUSTOM_MODEL_DATA) ||
-                !itemStack.contains(DataComponentTypes.CUSTOM_DATA)) {
+        if (!CONFIG.renderItemInside.enabled || !itemStack.hasNbt()) {
             return;
         }
 
-        int modelId = itemStack.get(DataComponentTypes.CUSTOM_MODEL_DATA).value();
-        NbtCompound customData = itemStack.get(DataComponentTypes.CUSTOM_DATA).getNbt();
+        int modelId = ModUtils.getCustomModelId(itemStack);
 
         ItemStack itemInside;
         boolean drawOriginal;
         if (itemStack.getItem() == Items.PAPER && modelId == 7301) {
-            if (!customData.contains("ElectricStorage.RecipeResults") ||
+            if (!itemStack.getNbt().contains("ElectricStorage.RecipeResults") ||
                     !testRender(CONFIG.renderItemInside.esPattern)) {
                 return;
             }
             drawOriginal = CONFIG.renderItemInside.esPattern.drawOriginal;
-            itemInside = itemStackFromNbtPre1_20_5(
-                    customData.getList("ElectricStorage.RecipeResults", NbtElement.COMPOUND_TYPE)
+            itemInside = ItemStack.fromNbt(
+                    itemStack.getNbt().getList("ElectricStorage.RecipeResults", NbtElement.COMPOUND_TYPE)
                             .getCompound(0));
         } else if (itemStack.getItem() == Items.BARRIER && modelId >= 1010 && modelId <= 1013) {
-            if (!customData.contains("ItemStack") ||
+            if (!itemStack.getNbt().contains("ItemStack") ||
                     !testRender(CONFIG.renderItemInside.storage)) {
                 return;
             }
             drawOriginal = CONFIG.renderItemInside.storage.drawOriginal;
-            itemInside = itemStackFromNbtPre1_20_5(customData.getCompound("ItemStack"));
+            itemInside = ItemStack.fromNbt(itemStack.getNbt().getCompound("ItemStack"));
         } else if (itemStack.getItem() == Items.IRON_HORSE_ARMOR && modelId == 2001) {
             if (!testRender(CONFIG.renderItemInside.crystalMemory)) {
                 return;
             }
             drawOriginal = CONFIG.renderItemInside.crystalMemory.drawOriginal;
-            itemInside = itemStackFromCrystalMemory(customData);
+            itemInside = itemStackFromCrystalMemory(itemStack.getNbt());
             if (itemInside == null) {
                 return;
             }
@@ -156,7 +148,7 @@ public class DrawContextMixin {
         return itemSetup.enabled && (itemSetup.renderAlways ||
                 (CLIENT.currentScreen != null && Screen.hasShiftDown()) ||
                 (itemSetup instanceof Config.RenderItemInsideItemSetupEsPattern itemSetupEsPattern &&
-                        itemSetupEsPattern.forceRenderInsideInterface && ModUtils.testCustomScreen(true, CLIENT.currentScreen, "electric_storage:interfaces", "\u0003")));
+                        itemSetupEsPattern.forceRenderInsideInterface && ModUtils.testCustomScreen(false, CLIENT.currentScreen, "electric_storage:interfaces", "\u0003")));
     }
 
     @Unique
@@ -226,24 +218,9 @@ public class DrawContextMixin {
 
         ItemStack stack = new ItemStack(item);
         if (modelId != 0) {
-            stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(modelId));
-        }
-        return stack;
-    }
-
-    @Unique
-    private static ItemStack itemStackFromNbtPre1_20_5(NbtCompound stackNbt) {
-        ItemStack stack = ItemStack.EMPTY;
-        try {
-            Item item = Registries.ITEM.get(Identifier.tryParse(stackNbt.getString("id")));
-            stack = new ItemStack(item);
-            if (stackNbt.contains("tag", NbtElement.COMPOUND_TYPE)) {
-                NbtCompound nbt = stackNbt.getCompound("tag");
-                if (nbt.contains("CustomModelData", NbtElement.INT_TYPE)) {
-                    stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(nbt.getInt("CustomModelData")));
-                }
-            }
-        } catch (Exception e) {
+            NbtCompound nbtCustomData = new NbtCompound();
+            nbtCustomData.putInt("CustomModelData", modelId);
+            stack.setNbt(nbtCustomData);
         }
         return stack;
     }

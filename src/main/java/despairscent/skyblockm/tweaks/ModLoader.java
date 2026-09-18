@@ -3,6 +3,7 @@ package despairscent.skyblockm.tweaks;
 import despairscent.skyblockm.tweaks.config.Config;
 import despairscent.skyblockm.tweaks.files.ModFolder;
 import despairscent.skyblockm.tweaks.keybinds.ConfigKeybind;
+import despairscent.skyblockm.tweaks.keybinds.HomeKeybind;
 import despairscent.skyblockm.tweaks.keybinds.Keybind;
 import despairscent.skyblockm.tweaks.keybinds.KeybindHandler;
 import despairscent.skyblockm.tweaks.modules.compactgenome.CompactGenomeModule;
@@ -33,7 +34,7 @@ public class ModLoader implements ClientModInitializer {
         /// кейбинды
         KeybindHandler.init();
         new ConfigKeybind().register();
-
+        new HomeKeybind().register();
     }
 
 }

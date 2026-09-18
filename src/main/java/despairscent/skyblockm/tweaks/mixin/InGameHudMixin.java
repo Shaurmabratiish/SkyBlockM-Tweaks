@@ -2,10 +2,11 @@ package despairscent.skyblockm.tweaks.mixin;
 
 import despairscent.skyblockm.tweaks.ModUtils;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
@@ -55,15 +56,20 @@ public class InGameHudMixin {
                 return itemStack.getName();
             }
 
-            LoreComponent lore = itemStack.get(DataComponentTypes.LORE);
-            if (lore == null || lore.styledLines().size() != 4) {
+            NbtCompound nbtDisplay = itemStack.getSubNbt(ItemStack.DISPLAY_KEY);
+            if (nbtDisplay == null) {
+                return itemStack.getName();
+            }
+            NbtList lore = nbtDisplay.getList(ItemStack.LORE_KEY, NbtElement.STRING_TYPE);
+            if (lore.size() != 3) {
                 return itemStack.getName();
             }
 
             try {
+                Text itemStr = Text.Serialization.fromJson(lore.getString(0));
                 return Text.empty().append(itemStack.getName())
                         .append(Text.literal(" <").styled(style -> style.withColor(Formatting.WHITE).withItalic(false)))
-                        .append(lore.styledLines().get(0).getSiblings().get(1))
+                        .append(itemStr.getSiblings().get(1))
                         .append(Text.literal(">").styled(style -> style.withColor(Formatting.WHITE).withItalic(false)));
             } catch (Exception e) {
             }
@@ -74,19 +80,23 @@ public class InGameHudMixin {
 
     @Unique
     private static Text getExtendedNameForStorage(ItemStack itemStack) {
-        LoreComponent lore = itemStack.get(DataComponentTypes.LORE);
-        if (lore == null || lore.styledLines().size() != 4) {
+        NbtCompound nbtDisplay = itemStack.getSubNbt(ItemStack.DISPLAY_KEY);
+        if (nbtDisplay == null) {
+            return itemStack.getName();
+        }
+        NbtList lore = nbtDisplay.getList(ItemStack.LORE_KEY, NbtElement.STRING_TYPE);
+        if (lore.size() != 4) {
             return itemStack.getName();
         }
 
         try {
+            Text itemStr = Text.Serialization.fromJson(lore.getString(3));
             return Text.empty().append(itemStack.getName())
                     .append(Text.literal(" <").styled(style -> style.withColor(Formatting.WHITE).withItalic(false)))
-                    .append(lore.styledLines().get(3))
+                    .append(itemStr)
                     .append(Text.literal(">").styled(style -> style.withColor(Formatting.WHITE).withItalic(false)));
         } catch (Exception e) {
         }
-
         return itemStack.getName();
     }
 
